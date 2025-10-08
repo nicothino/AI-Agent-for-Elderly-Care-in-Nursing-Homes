@@ -6,6 +6,7 @@ Este repo contiene una estructura de carpetas y archivos de ejemplo para arranca
 - **OpenAI**: embeddings + chat (RAG)
 - **ElevenLabs**: Text-to-Speech (TTS)
 - Orquestador local que conecta todo
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/aa55fdb5-6029-4118-ba17-2269688b3946" />
 
 ## Arquitectura (resumida)
 Device (speakerphone USB) → STT (VOSK, local) → Orquestador/Router (planner) → RAG (OpenAI embeddings + vector DB) → LLM (OpenAI Chat) → Executor (acciones, herramientas) → TTS (ElevenLabs) → Output (USB speaker).
