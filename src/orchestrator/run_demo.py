@@ -1,42 +1,27 @@
-"""
-Orquestador demo: captura una frase con VOSK y ejecuta planner->executor->tts
-Es un demo muy simple para validar integración local.
-"""
-import os, asyncio
-from dotenv import load_dotenv
-from src.stt.vosk_stt import VoskSTT
-from src.tts.eleven_tts import ElevenTTS
-from src.memory.memory import ShortTermMemory
-from src.agent.planner import Planner
-from src.agent.executor import Executor
-
-load_dotenv()
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-ELEVEN_API_KEY = os.getenv("ELEVENLABS_API_KEY")
-
-stt = VoskSTT()
-tts = ElevenTTS(ELEVEN_API_KEY)
-memory = ShortTermMemory()
-planner = Planner()
-executor = Executor(OPENAI_API_KEY)
+import asyncio
+from stt.vosk_stt import recognize_once
+from tts.eleven_tts import eleven_tts, play_audio
+from orchestrator.core_orchestrator import Orchestrator
+import agent.empathy_agent  # registra agentes
+import agent.weather_agent
 
 async def main():
-    print("🎙️ Asistente modular listo. Habla...")
-    while True:
-        text = stt.listen_once(duration=6)
-        if not text:
-            continue
-        print("📝 Usuario:", text)
+    orch = Orchestrator()
+    print("🤖 Asistente modular listo (Ctrl+C para salir).")
 
-        memory.add("user", text)
-        action = planner.decide(text)
-        answer = executor.execute(action, text, memory.get())
+    while True:
+        text = recognize_once(duration=5)
+        if not text:
+            print("… No entendí nada, intenta de nuevo.")
+            continue
+
+        print("📝 Usuario:", text)
+        answer = await orch.handle_text(text)
         print("🤖 Asistente:", answer)
 
-        memory.add("assistant", answer)
-        audio = tts.synthesize(answer)
-        tts.play(audio)
+        mp3 = eleven_tts(answer)
+        if mp3:
+            play_audio(mp3)
 
 if __name__ == "__main__":
     asyncio.run(main())
