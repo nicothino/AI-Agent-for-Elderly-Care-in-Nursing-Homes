@@ -11,7 +11,7 @@ class EmpathyAgent(BaseAgent):
     async def handle(self, text: str, context=None) -> str:
         """Responde con tono empático usando OpenAI Agents SDK."""
         voice_agent = Agent(
-            name="NicoBot Empático",
+            name="Apolo",
             instructions="Responde en español, de forma cálida, empática y breve."
         )
         result = await Runner.run(voice_agent, text)

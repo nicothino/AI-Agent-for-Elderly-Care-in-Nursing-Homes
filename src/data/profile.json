@@ -1,0 +1,7 @@
+{
+  "name": "Nicolás",
+  "age": 78,
+  "likes": ["cine", "música clásica", "caminar"],
+  "conditions": ["hipertensión"],
+  "family": ["María", "Luis"]
+}

@@ -1,31 +1,31 @@
 from agent.base_agent import BaseAgent, register_agent
-import requests, os
-from dotenv import load_dotenv
-load_dotenv()
-
-OPENWEATHER_KEY = os.getenv("OPENWEATHER_API_KEY")
+import requests
 
 class WeatherAgent(BaseAgent):
     name = "weather_agent"
-    description = "Consulta el clima actual"
+    description = "Consulta el clima actual usando la API gratuita wttr.in"
 
     def can_handle(self, intent: str) -> bool:
-        return intent == "weather"
+        # Intención relacionada con el clima
+        return intent in ("weather", "clima", "temperatura")
 
     async def handle(self, text: str, context=None) -> str:
-        """Consulta OpenWeather y responde brevemente."""
-        if not OPENWEATHER_KEY:
-            return "No tengo configurada la API del clima."
-
-        city = "Cali"  # Puedes extraer de perfil o NLP
-        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_KEY}&units=metric&lang=es"
-        r = requests.get(url)
-        if r.status_code != 200:
-            return "No pude obtener el clima ahora."
-        data = r.json()
-        desc = data["weather"][0]["description"]
-        temp = data["main"]["temp"]
-        return f"En {city} hay {desc} y {temp} grados."
+        """Consulta el clima con la API gratuita wttr.in"""
+        try:
+            # Puedes extraer ciudad del texto si quieres, por ahora fijo en Cali
+            city = "Cali"
+            url = f"https://wttr.in/{city}?format=j1"
+            res = requests.get(url, timeout=10)
+            if res.status_code != 200:
+                return "No pude obtener el clima ahora mismo."
+            data = res.json()
+            current = data["current_condition"][0]
+            temp = current["temp_C"]
+            desc = current["weatherDesc"][0]["value"].lower()
+            return f"En {city} hay {desc} y una temperatura de {temp}°C."
+        except Exception as e:
+            print(f"⚠️ Error WeatherAgent: {e}")
+            return "No pude consultar el clima en este momento."
 
 # Registrar agente
 register_agent(WeatherAgent())

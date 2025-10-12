@@ -5,9 +5,11 @@ Puede ampliarse con modelos o embeddings.
 import re
 
 INTENT_KEYWORDS = {
-    "weather": ["clima", "tiempo", "temperatura", "va a llover"],
-    "empathy": ["me siento", "estoy triste", "solo", "feliz", "emocionado"],
+    "websearch": ["buscar", "investiga", "qué es", "quién es", "dónde queda", "información sobre", "cuándo fue"],
+    "weather": ["clima", "tiempo", "va a llover", "temperatura", "frío", "calor"],
+    "empathy": ["me siento", "estoy triste", "solo", "feliz", "contento"],
 }
+
 
 def detect_intent(text: str) -> str:
     text = text.lower()
